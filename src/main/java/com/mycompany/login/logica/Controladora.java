@@ -8,27 +8,32 @@ public class Controladora {
     
     ControladoraPersistencia controlPersis = new ControladoraPersistencia();
 
-    public String validarUsuario(String usuario, String contrasenia) {
+    public Usuario validarUsuario(String usuario, String contrasenia) {
        
-       String mensaje = ""; 
-        
+       //String mensaje = ""; 
+       Usuario user = null;
        List<Usuario> listaUsuarios = controlPersis.traerUsuarios();
        
        for(Usuario usu : listaUsuarios){
            if(usu.getNombreUsuario().equals(usuario)){
-               if(usu.getContraseña().equals(contrasenia)){
-                   mensaje = "Usuario y contraseña correctos. Bienvenido/a!";
-                   return mensaje;
+               if(usu.getContrasenia().equals(contrasenia)){
+                   //mensaje = "Usuario y contraseña correctos. Bienvenido/a!";
+                   user = usu;
+                   return user;
                }else{
-                    mensaje = "Contraseña Incorrecta";
-                    return mensaje;
+                    //mensaje = "Contraseña Incorrecta";
+                    user = null;
+                    return user;
                }
            }else{
-               mensaje = "Usuario Incorrecto";
-               
+               //mensaje = "Usuario Incorrecto";
+               user = null;
+     
            }
        }
-        return mensaje;
+        return user;
     }
+
+    
     
 }

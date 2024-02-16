@@ -5,6 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+
 
 @Entity
 public class Usuario implements Serializable {
@@ -13,15 +17,20 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
     private String nombreUsuario;
-    private String contraseña;
+    private String contrasenia;
+    
+    @ManyToOne
+    @JoinColumn(name="id_rol")
+    private Rol unRol;
 
     public Usuario() {
     }
 
-    public Usuario(int id, String nombreUsuario, String contraseña) {
+    public Usuario(int id, String nombreUsuario, String contrasenia, Rol unRol) {
         this.id = id;
         this.nombreUsuario = nombreUsuario;
-        this.contraseña = contraseña;
+        this.contrasenia = contrasenia;
+        this.unRol = unRol;
     }
 
     public int getId() {
@@ -40,14 +49,21 @@ public class Usuario implements Serializable {
         this.nombreUsuario = nombreUsuario;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getContrasenia() {
+        return contrasenia;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
     }
-    
-    
+
+    public Rol getUnRol() {
+        return unRol;
+    }
+
+    public void setUnRol(Rol unRol) {
+        this.unRol = unRol;
+    }
+
     
 }
