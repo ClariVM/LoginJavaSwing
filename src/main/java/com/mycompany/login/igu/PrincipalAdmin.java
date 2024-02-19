@@ -2,6 +2,10 @@ package com.mycompany.login.igu;
 
 import com.mycompany.login.logica.Controladora;
 import com.mycompany.login.logica.Usuario;
+import java.util.List;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 
 
@@ -24,7 +28,7 @@ public class PrincipalAdmin extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaUsuarios = new javax.swing.JTable();
         btnNuevoUsuario = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnBorrar = new javax.swing.JButton();
@@ -42,8 +46,8 @@ public class PrincipalAdmin extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 36)); // NOI18N
         jLabel1.setText("SISTEMA ADMINISTRADOR DE USUARIOS");
 
-        jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaUsuarios.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        tablaUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -54,16 +58,26 @@ public class PrincipalAdmin extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaUsuarios);
 
         btnNuevoUsuario.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnNuevoUsuario.setText("Crear Nuevo Usuario");
+        btnNuevoUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoUsuarioActionPerformed(evt);
+            }
+        });
 
         btnEditar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnEditar.setText("Editar Usuario");
 
         btnBorrar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnBorrar.setText("Borrar Usuario");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
         btnRecargar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnRecargar.setText("Recargar Tabla");
@@ -146,12 +160,58 @@ public class PrincipalAdmin extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.txtNombreUser.setText(user.getNombreUsuario());
+        cargarTabla();
     }//GEN-LAST:event_formWindowOpened
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
 
+    private void btnNuevoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoUsuarioActionPerformed
+        
+        AltaUsuarios altaUsu = new AltaUsuarios(control);
+        altaUsu.setVisible(true);
+        altaUsu.setLocationRelativeTo(null);
+        this.dispose();
+        
+    }//GEN-LAST:event_btnNuevoUsuarioActionPerformed
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        
+        if(tablaUsuarios.getRowCount()>0){
+            if(tablaUsuarios.getSelectedRow()!=-1){
+               int id_usuario = Integer.parseInt(String.valueOf(tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow() , 0)));
+               
+               control.borrarUsuario(id_usuario);
+               
+                mostrarMensaje("Usuario eliminado correctamente", "Info", "Eliminado exitoso");
+                
+                cargarTabla();
+               
+               
+            } else{
+                mostrarMensaje("No seleccionó nigún registro", "Error", "Error al borrar" );
+            }
+        }else{
+            mostrarMensaje("La tabla está vacía", "Error", "Error al borrar" );
+        }
+        
+    }//GEN-LAST:event_btnBorrarActionPerformed
+        public void mostrarMensaje(String mensaje, String tipo, String titulo) {
+
+        JOptionPane optionPane = new JOptionPane(mensaje);
+        if (tipo.equals("Info")) {
+            optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+        } else if (tipo.equals("Error")) {
+            optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
+        }
+        JDialog dialog = optionPane.createDialog(titulo);
+
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);
+
+       
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBorrar;
@@ -162,7 +222,38 @@ public class PrincipalAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tablaUsuarios;
     private javax.swing.JTextField txtNombreUser;
     // End of variables declaration//GEN-END:variables
+
+    private void cargarTabla() {
+
+        DefaultTableModel modeloTabla = new DefaultTableModel(){
+            
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false; 
+            }
+        };
+        
+        String titulos[] = {"Id", "Usuario", "Rol"};
+        modeloTabla.setColumnIdentifiers(titulos);
+        
+        List <Usuario> listaUsuarios =  control.traerUsuarios();
+        
+        if(listaUsuarios != null ) {
+          
+            for(Usuario usu : listaUsuarios){
+              Object[] objeto = {usu.getId(),usu.getNombreUsuario(),usu.getUnRol().getNombreRol()};
+              
+              
+              modeloTabla.addRow(objeto);
+          }
+            
+        }
+        
+        tablaUsuarios.setModel(modeloTabla);
+        
+
+    }
 }
