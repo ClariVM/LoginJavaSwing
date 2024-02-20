@@ -70,6 +70,11 @@ public class PrincipalAdmin extends javax.swing.JFrame {
 
         btnEditar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnEditar.setText("Editar Usuario");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnBorrar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnBorrar.setText("Borrar Usuario");
@@ -81,6 +86,11 @@ public class PrincipalAdmin extends javax.swing.JFrame {
 
         btnRecargar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnRecargar.setText("Recargar Tabla");
+        btnRecargar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecargarActionPerformed(evt);
+            }
+        });
 
         btnSalir.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         btnSalir.setText("Salir");
@@ -172,7 +182,7 @@ public class PrincipalAdmin extends javax.swing.JFrame {
         AltaUsuarios altaUsu = new AltaUsuarios(control);
         altaUsu.setVisible(true);
         altaUsu.setLocationRelativeTo(null);
-        this.dispose();
+        //this.dispose();
         
     }//GEN-LAST:event_btnNuevoUsuarioActionPerformed
 
@@ -197,6 +207,29 @@ public class PrincipalAdmin extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_btnBorrarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        if(tablaUsuarios.getRowCount()>0){
+            if(tablaUsuarios.getSelectedRow()!=-1){
+               int id_usuario = Integer.parseInt(String.valueOf(tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow() , 0)));
+               
+               EdicionUsuarios pEdicion = new EdicionUsuarios(control, id_usuario);
+               pEdicion.setVisible(true);
+               pEdicion.setLocationRelativeTo(null);
+               
+               
+               
+            } else{
+                mostrarMensaje("No seleccionó nigún registro", "Error", "Error al editar" );
+            }
+        }else{
+            mostrarMensaje("La tabla está vacía", "Error", "Error al editar" );
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnRecargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecargarActionPerformed
+        cargarTabla();
+    }//GEN-LAST:event_btnRecargarActionPerformed
         public void mostrarMensaje(String mensaje, String tipo, String titulo) {
 
         JOptionPane optionPane = new JOptionPane(mensaje);
